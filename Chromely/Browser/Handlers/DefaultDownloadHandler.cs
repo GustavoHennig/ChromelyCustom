@@ -1,20 +1,27 @@
-﻿// Copyright © 2017-2020 Chromely Projects. All rights reserved.
+﻿// Copyright © 2017 Chromely Projects. All rights reserved.
 // Use of this source code is governed by MIT license that can be found in the LICENSE file.
 
-using Xilium.CefGlue;
+namespace Chromely.Browser;
 
-namespace Chromely.Browser
+/// <summary>
+/// Default implementation of <see cref="CefDownloadHandler"/>.
+/// </summary>
+public class DefaultDownloadHandler : CefDownloadHandler
 {
-    public class DefaultDownloadHandler : CefDownloadHandler
+    /// <inheritdoc/>
+    protected override bool CanDownload(CefBrowser browser, string url, string request_method)
     {
-        protected override void OnBeforeDownload(CefBrowser browser, CefDownloadItem downloadItem, string suggestedName, CefBeforeDownloadCallback callback)
+        return true;
+    }
+
+    /// <inheritdoc/>
+    protected override void OnBeforeDownload(CefBrowser browser, CefDownloadItem downloadItem, string suggestedName, CefBeforeDownloadCallback callback)
+    {
+        if (callback is not null)
         {
-            if (callback != null)
+            using (callback)
             {
-                using (callback)
-                {
-                    callback.Continue(downloadItem.SuggestedFileName, showDialog: true);
-                }
+                callback.Continue(downloadItem.SuggestedFileName, showDialog: true);
             }
         }
     }
